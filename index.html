@@ -217,7 +217,7 @@ function draw() {
   });
 
   angle += 0.002;
-  requestAnimationFrame(draw);
+  setTimeout(() => {   requestAnimationFrame(draw); }, 50);
 }
 
 draw();
