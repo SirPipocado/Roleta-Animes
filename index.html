@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Roleta Anime</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0b0b0b;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  pointer-events: none; /* trava tudo */
+}
+
+.container {
+  display: flex;
+  gap: 60px;
+  align-items: center;
+}
+
+canvas {
+  width: 420px;
+  height: 420px;
+}
+
+.lista {
+  background: #1c1c1c;
+  padding: 20px;
+  border-radius: 12px;
+  width: 220px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.lista h3 {
+  margin-top: 0;
+}
+
+.lista ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.lista li {
+  padding: 6px 0;
+  border-bottom: 1px solid #333;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <canvas id="roleta" width="400" height="400"></canvas>
+
+  <div class="lista">
+    <h3>Entradas</h3>
+    <ul id="lista-nomes">
+      <li>Naruto</li>
+      <li>One Piece</li>
+      <li>Attack on Titan</li>
+      <li>Demon Slayer</li>
+      <li>Jujutsu Kaisen</li>
+      <li>Death Note</li>
+      <li>Chainsaw Man</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("roleta");
+const ctx = canvas.getContext("2d");
+
+let angle = 0;
+
+function getNomes() {
+  const itens = document.querySelectorAll("#lista-nomes li");
+  return Array.from(itens).map(li => li.textContent);
+}
+
+function draw() {
+  const nomes = getNomes();
+  const total = nomes.length;
+  const angleStep = (2 * Math.PI) / total;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  nomes.forEach((nome, i) => {
+    const start = i * angleStep + angle;
+    const end = start + angleStep;
+
+    ctx.fillStyle = `hsl(${i * 360 / total}, 70%, 50%)`;
+
+    ctx.beginPath();
+    ctx.moveTo(200, 200);
+    ctx.arc(200, 200, 180, start, end);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(200, 200);
+    ctx.rotate(start + angleStep / 2);
+
+    let fontSize = 16;
+    ctx.font = fontSize + "px Arial";
+
+    while (ctx.measureText(nome).width > 150 && fontSize > 8) {
+      fontSize--;
+      ctx.font = fontSize + "px Arial";
+    }
+
+    ctx.textAlign = "right";
+    ctx.fillStyle = "white";
+    ctx.fillText(nome, 170, 5);
+
+    ctx.restore();
+  });
+
+  angle += 0.002;
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
+</html>
