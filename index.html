@@ -2,69 +2,105 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Roleta Anime</title>
-
+<title>Roleta Anime - Sir Pipocado</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0b0b0b;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b0b0b;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
 
-  pointer-events: none; /* trava tudo */
-}
+  .container {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    z-index: 5;
+  }
 
-.container {
-  display: flex;
-  gap: 60px;
-  align-items: center;
-}
+  /* Roleta visível e sem interferir nos cliques da lista */
+  .roleta-wrapper {
+    width: 700px;
+    height: 700px;
+    animation: girar 50s linear infinite;
+    pointer-events: none; /* Só visual */
+    flex-shrink: 0;
+  }
 
-canvas {
-  width: 850px;
-  height: 850px;
-}
+  @keyframes girar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 
-.lista {
-  background: #1c1c1c;
-  padding: 20px;
-  border-radius: 12px;
-  width: 220px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
-}
+  canvas {
+    width: 100%;
+    height: 100%;
+  }
 
-.lista h3 {
-  margin-top: 0;
-}
+  /* LISTA COM O TÍTULO QUE BLOQUEIA OS NOMES EM CIMA */
+  .lista {
+    background: #1c1c1c;
+    padding: 0 25px 25px 25px; /* Sem padding no topo para o título colar */
+    border-radius: 15px;
+    width: 380px;
+    height: 550px;
+    overflow-y: auto;
+    border: 1px solid #333;
+    position: relative;
+    pointer-events: all;
+  }
 
-.lista ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  max-height: 300px;
-  overflow-y: auto;
-}
+  .lista h2 {
+    color: #ffcc00;
+    margin: 0;
+    font-size: 22px;
+    border-bottom: 1px solid #444;
+    padding: 25px 0 15px 0; /* Padding interno para o título ter espaço */
+    margin-bottom: 20px;
+    position: sticky; 
+    top: 0;
+    background: #1c1c1c; /* Tapa os nomes que sobem */
+    z-index: 30;
+  }
 
-.lista li {
-  padding: 6px 0;
-  border-bottom: 1px solid #333;
-  font-size: 14px;
-}
+  .lista ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .lista li {
+    background: #2a2a2a;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    border-left: 5px solid #ffcc00;
+  }
+
+  /* Scrollbar */
+  .lista::-webkit-scrollbar { width: 8px; }
+  .lista::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
 </style>
 </head>
-
 <body>
 
 <div class="container">
-  <canvas id="roleta" width="1000" height="1000"></canvas>
+  <div class="roleta-wrapper">
+    <canvas id="roleta" width="1000" height="1000"></canvas>
+  </div>
 
   <div class="lista">
-    <h3>Entradas</h3>
+    <h2>Animes na Roleta</h2>
     <ul id="lista-nomes">
+      <!-- SUA LISTA AQUI -->
       <li>A Galaxy Next Door</li>
       <li>A Journey Through Another World: Raising Kids While Adventuring</li>
       <li>A Playthrough of a Certain Dude's VRMMO Life</li>
@@ -171,57 +207,55 @@ canvas {
 const canvas = document.getElementById("roleta");
 const ctx = canvas.getContext("2d");
 
-let angle = 0;
-
-function getNomes() {
+function desenhar() {
   const itens = document.querySelectorAll("#lista-nomes li");
-  return Array.from(itens).map(li => li.textContent);
-}
-
-function draw() {
-  const nomes = getNomes();
+  const nomes = Array.from(itens).map(li => li.textContent);
   const total = nomes.length;
-  const angleStep = (2 * Math.PI) / total;
+  if (total === 0) return;
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const angleStep = (2 * Math.PI) / total;
+  const centro = 500;
+
+  ctx.clearRect(0, 0, 1000, 1000);
 
   nomes.forEach((nome, i) => {
-    const start = i * angleStep + angle;
+    const start = i * angleStep;
     const end = start + angleStep;
 
-    ctx.fillStyle = `hsl(${i * 360 / total}, 70%, 50%)`;
-
+    ctx.fillStyle = `hsl(${i * 360 / total}, 70%, 45%)`;
     ctx.beginPath();
-    ctx.moveTo(200, 200);
-    ctx.arc(200, 200, 180, start, end);
+    ctx.moveTo(centro, centro);
+    ctx.arc(centro, centro, 480, start, end);
     ctx.closePath();
     ctx.fill();
 
     ctx.save();
-    ctx.translate(200, 200);
+    ctx.translate(centro, centro);
     ctx.rotate(start + angleStep / 2);
-
-    let fontSize = 16;
-    ctx.font = fontSize + "px Arial";
-
-    while (ctx.measureText(nome).width > 150 && fontSize > 8) {
-      fontSize--;
-      ctx.font = fontSize + "px Arial";
-    }
-
     ctx.textAlign = "right";
-    ctx.fillStyle = "white";
-    ctx.fillText(nome, 170, 5);
+    ctx.fillStyle = "black";
+    
+    let fontSize;
+    if (total > 120) fontSize = 16;
+    else if (total > 80) fontSize = 18;
+    else if (total > 50) fontSize = 20;
+    else fontSize = 22;
+    ctx.font = `bold ${fontSize}px Arial`;
 
+    let txt = nome.length > 25 ? nome.substring(0, 22) + "..." : nome;
+    ctx.fillText(txt, 465, fontSize/3); 
     ctx.restore();
   });
 
-  angle += 0.002;
-  setTimeout(() => {   requestAnimationFrame(draw); }, 50);
+  // Furo central branco
+  ctx.beginPath();
+  ctx.arc(centro, centro, 60, 0, 2 * Math.PI);
+  ctx.fillStyle = "white";
+  ctx.fill();
 }
 
-draw();
+// Pequeno delay para garantir que o DOM carregou
+window.addEventListener('load', desenhar);
 </script>
-
 </body>
 </html>
