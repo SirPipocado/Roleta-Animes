@@ -25,12 +25,11 @@
     z-index: 5;
   }
 
-  /* Roleta visível e sem interferir nos cliques da lista */
   .roleta-wrapper {
     width: 700px;
     height: 700px;
     animation: girar 50s linear infinite;
-    pointer-events: none; /* Só visual */
+    pointer-events: none;
     flex-shrink: 0;
   }
 
@@ -44,10 +43,9 @@
     height: 100%;
   }
 
-  /* LISTA COM O TÍTULO QUE BLOQUEIA OS NOMES EM CIMA */
   .lista {
     background: #1c1c1c;
-    padding: 0 25px 25px 25px; /* Sem padding no topo para o título colar */
+    padding: 0 25px 25px 25px;
     border-radius: 15px;
     width: 380px;
     height: 550px;
@@ -62,11 +60,11 @@
     margin: 0;
     font-size: 22px;
     border-bottom: 1px solid #444;
-    padding: 25px 0 15px 0; /* Padding interno para o título ter espaço */
+    padding: 25px 0 15px 0;
     margin-bottom: 20px;
     position: sticky; 
     top: 0;
-    background: #1c1c1c; /* Tapa os nomes que sobem */
+    background: #1c1c1c;
     z-index: 30;
   }
 
@@ -85,7 +83,7 @@
     border-left: 5px solid #ffcc00;
   }
 
-  /* Scrollbar */
+
   .lista::-webkit-scrollbar { width: 8px; }
   .lista::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
 </style>
@@ -100,7 +98,7 @@
   <div class="lista">
     <h2>Animes na Roleta</h2>
     <ul id="lista-nomes">
-      <!-- SUA LISTA AQUI -->
+      <!-- LISTA AQUI -->
       <li>A Galaxy Next Door</li>
       <li>A Journey Through Another World: Raising Kids While Adventuring</li>
       <li>A Playthrough of a Certain Dude's VRMMO Life</li>
@@ -247,14 +245,13 @@ function desenhar() {
     ctx.restore();
   });
 
-  // Furo central branco
+  
   ctx.beginPath();
   ctx.arc(centro, centro, 60, 0, 2 * Math.PI);
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "black";
   ctx.fill();
 }
 
-// Pequeno delay para garantir que o DOM carregou
 window.addEventListener('load', desenhar);
 </script>
 </body>
